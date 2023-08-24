@@ -10,19 +10,4 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
     }
-
-    void RenderSkia(object? sender, RoutedEventArgs e)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    void RenderOpenGl(object? sender, RoutedEventArgs e)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    void RenderVulkan(object? sender, RoutedEventArgs e)
-    {
-        throw new System.NotImplementedException();
-    }
 }

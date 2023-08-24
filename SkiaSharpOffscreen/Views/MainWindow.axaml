@@ -22,7 +22,7 @@
             <Image Source="{Binding Image}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         </Border>
         <StackPanel Orientation="Vertical" Grid.Column="1">
-            <Button Command="{Binding RenderSkia}" Margin="10,10,10,0" HorizontalAlignment="Stretch">Skia</Button>
+            <Button Command="{Binding RenderSkia}" Margin="10,10,10,0" HorizontalAlignment="Stretch">Native Skia</Button>
             <Button Command="{Binding RenderOpenGl}" Margin="10,10,10,0" HorizontalAlignment="Stretch">OpenGl</Button>
             <Button Command="{Binding RenderVulkan}" Margin="10,10,10,0" HorizontalAlignment="Stretch">Vulkan</Button>
             <TextBlock Text="{Binding Description}" Margin="10" Width="250" />

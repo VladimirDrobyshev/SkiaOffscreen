@@ -39,11 +39,8 @@ public class SkiaViewModel : ViewModelBase
         model.Dispose();
     }
 
-    void RenderSkia() => Render(new SkiaModel());
-    void RenderVulkan()
-    {
-        
-    }
+    void RenderSkia() => Render(new SkiaNativeModel());
+    void RenderVulkan() => Render(new SkiaVulkanModel());
     void RenderOpenGl()
     {
     }

@@ -46,19 +46,18 @@ public abstract class SkiaModelBase : IDisposable
 
         SKPoint RandomPoint() => new (rnd.Next(Width), rnd.Next(Height));
     }
-    protected abstract SKCanvas GetCanvas();
-    protected abstract SKImage Snapshot();
+    protected abstract SKSurface GetSurface();
     public void Render()
     {
         var stopwatchCanvas = Stopwatch.StartNew();
-        using var canvas = GetCanvas();
+        var surface = GetSurface();
         stopwatchCanvas.Stop();
         
         var stopwatchRender = Stopwatch.StartNew();
-        RenderPrimitives(canvas);
+        RenderPrimitives(surface.Canvas);
         stopwatchRender.Stop();
 
-        using var image = Snapshot();
+        using var image = surface.Snapshot();
         using var imageData = image.Encode();
         using var stream = new MemoryStream();
         imageData.SaveTo(stream);
@@ -66,10 +65,10 @@ public abstract class SkiaModelBase : IDisposable
         Image = new Bitmap(stream);
         
         var output = new StringBuilder();
-        output.AppendLine($"Renderer: {RendererName}");
+        output.AppendLine($"Backend: {RendererName}");
         output.AppendLine($"Primitives count: {PrimitivesCount}");
         output.AppendLine($"Render time: {Math.Ceiling(stopwatchRender.Elapsed.TotalMilliseconds)}ms");
-        output.AppendLine($"Canvas creation time: {stopwatchCanvas.Elapsed.TotalMilliseconds}ms");
+        output.AppendLine($"Surface creation time: {stopwatchCanvas.Elapsed.TotalMilliseconds}ms");
         Description = output.ToString();
     }
     public abstract void Dispose();

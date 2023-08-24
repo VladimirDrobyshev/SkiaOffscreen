@@ -1,0 +1,32 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:SkiaSharpOffscreen.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+        Width="1200" Height="800"
+        x:Class="SkiaSharpOffscreen.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="SkiaSharpOffscreen">
+
+    <Design.DataContext>
+        <vm:SkiaViewModel/>
+    </Design.DataContext>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Border Margin="10,10,0,10" BorderThickness="1" BorderBrush="Black" >
+            <Image Source="{Binding Image}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        </Border>
+        <StackPanel Orientation="Vertical" Grid.Column="1">
+            <Button Command="{Binding RenderSkia}" Margin="10,10,10,0" HorizontalAlignment="Stretch">Skia</Button>
+            <Button Command="{Binding RenderOpenGl}" Margin="10,10,10,0" HorizontalAlignment="Stretch">OpenGl</Button>
+            <Button Command="{Binding RenderVulkan}" Margin="10,10,10,0" HorizontalAlignment="Stretch">Vulkan</Button>
+            <TextBlock Text="{Binding Description}" Margin="10" Width="250" />
+        </StackPanel>
+    </Grid>
+
+</Window>

@@ -1,9 +1,12 @@
+using OffscreenVulkan;
 using SkiaSharp;
 
 namespace SkiaSharpOffscreen.Models;
 
 public class SkiaVulkanModel : SkiaModelBase
 {
+    OffscreenVkContext? _offscreenVkContext;
+    GRContext? _grContext;
     SKSurface? _surface;
 
     protected override string RendererName => "Vulkan";
@@ -12,7 +15,9 @@ public class SkiaVulkanModel : SkiaModelBase
     {
         if (_surface == null)
         {
-
+            _offscreenVkContext = new OffscreenVkContext(Width, Height);
+            _grContext = GRContext.CreateVulkan(_offscreenVkContext.BackendContext);
+            _surface = SKSurface.Create(_grContext, true, new SKImageInfo(Width, Height));
         }
         return _surface;
     }

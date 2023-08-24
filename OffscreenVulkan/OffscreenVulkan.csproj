@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Reference Include="SharpVk">
+        <HintPath>..\..\..\..\.nuget\packages\sharpvk\0.4.2\lib\netstandard2.0\SharpVk.dll</HintPath>
+      </Reference>
+      <Reference Include="SkiaSharp">
+        <HintPath>..\..\..\..\.nuget\packages\skiasharp\2.88.5\lib\net6.0\SkiaSharp.dll</HintPath>
+      </Reference>
+      <Reference Include="SkiaSharp.Vulkan.SharpVk">
+        <HintPath>..\..\..\..\.nuget\packages\skiasharp.vulkan.sharpvk\2.88.5\lib\net6.0\SkiaSharp.Vulkan.SharpVk.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>

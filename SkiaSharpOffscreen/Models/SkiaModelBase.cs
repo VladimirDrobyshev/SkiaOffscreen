@@ -10,7 +10,7 @@ namespace SkiaSharpOffscreen.Models;
 
 public abstract class SkiaModelBase : IDisposable
 {
-    const int PrimitivesCount = 100000;
+    const int PrimitivesCount = 1000000;
     protected const int Width = 800;
     protected const int Height = 600;
     
@@ -23,7 +23,7 @@ public abstract class SkiaModelBase : IDisposable
     {
         const int maxWidth = Width / 4;
         const int maxHeight = Height / 4;
-        var rnd = new Random();
+        var rnd = new Random(0);
 
         canvas.Clear(SKColors.SkyBlue);
         for (int i = 0; i < PrimitivesCount; i++)

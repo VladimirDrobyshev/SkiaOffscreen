@@ -1,0 +1,7 @@
+/.idea
+*.suo
+*.user
+*bin/
+*obj/
+*Debug/
+*Release/

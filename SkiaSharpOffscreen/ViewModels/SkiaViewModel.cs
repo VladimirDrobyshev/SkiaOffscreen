@@ -1,4 +1,5 @@
-﻿using System.Reactive;
+﻿using System;
+using System.Reactive;
 using Avalonia.Media;
 using ReactiveUI;
 using SkiaSharpOffscreen.Models;
@@ -21,6 +22,8 @@ public class SkiaViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _image, value);
     }
 
+    public IntPtr HWnd { get; set; }
+    public IntPtr HInstance { get; set; }
     public ReactiveCommand<Unit, Unit> RenderSkiaCommand { get; }
     public ReactiveCommand<Unit, Unit> RenderVulkanCommand { get; }
     public ReactiveCommand<Unit, Unit> RenderOpenglCommand { get; }
@@ -40,7 +43,7 @@ public class SkiaViewModel : ViewModelBase
     }
 
     void RenderSkia() => Render(new SkiaNativeModel());
-    void RenderVulkan() => Render(new SkiaVulkanModel());
+    void RenderVulkan() => Render(new SkiaVulkanModel(HInstance, HWnd));
     void RenderOpenGl()
     {
     }

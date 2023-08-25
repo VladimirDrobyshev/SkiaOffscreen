@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkiaSharpOffscreen", "SkiaS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OffscreenVulkan", "OffscreenVulkan\OffscreenVulkan.csproj", "{6B49C5AA-251E-41DD-88CF-B670769A0D66}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OffscreenOpenGl", "OffscreenOpenGl\OffscreenOpenGl.csproj", "{B487A29A-9E59-45FD-8777-7429B628654B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{6B49C5AA-251E-41DD-88CF-B670769A0D66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B49C5AA-251E-41DD-88CF-B670769A0D66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B49C5AA-251E-41DD-88CF-B670769A0D66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B487A29A-9E59-45FD-8777-7429B628654B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B487A29A-9E59-45FD-8777-7429B628654B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B487A29A-9E59-45FD-8777-7429B628654B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B487A29A-9E59-45FD-8777-7429B628654B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

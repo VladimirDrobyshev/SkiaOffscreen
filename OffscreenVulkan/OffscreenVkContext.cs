@@ -1,4 +1,5 @@
-﻿using SharpVk;
+﻿using OffscreenVulkan.Platform.Windows;
+using SharpVk;
 using SharpVk.Khronos;
 using SkiaSharp;
 
@@ -12,12 +13,12 @@ public class OffscreenVkContext : IDisposable
 
     public GRVkBackendContext BackendContext => _backendContext!;
 
-    public OffscreenVkContext(IntPtr hInstance, IntPtr hWnd)
+    public OffscreenVkContext(IntPtr hWnd)
     {
         _instance = Instance.Create(null, new[] { "VK_KHR_surface", "VK_KHR_win32_surface" }); //TODO VD: non windows
         var physicalDevice = _instance.EnumeratePhysicalDevices().First();
 
-        _surface = _instance.CreateWin32Surface(hInstance, hWnd);
+        _surface = _instance.CreateWin32Surface(Kernel32.CurrentModuleHandle, hWnd);
         
         var families = FindQueueFamilies(physicalDevice, _surface);
 
@@ -74,11 +75,6 @@ public class OffscreenVkContext : IDisposable
         {
             _backendContext.Dispose();
             _backendContext = null;
-        }
-        if (_instance != null)
-        {
-            _instance.Dispose();
-            _instance = null;
         }
     }
 }

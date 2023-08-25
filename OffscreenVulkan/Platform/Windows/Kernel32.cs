@@ -2,7 +2,7 @@
 
 namespace OffscreenVulkan.Platform.Windows;
 
-public static class Kernel32
+internal static class Kernel32
 {
     static Kernel32()
     {

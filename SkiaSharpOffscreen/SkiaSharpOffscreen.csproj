@@ -29,6 +29,7 @@
         <PackageReference Include="XamlNameReferenceGenerator" Version="1.3.4"/>
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\OffscreenOpenGl\OffscreenOpenGl.csproj" />
       <ProjectReference Include="..\OffscreenVulkan\OffscreenVulkan.csproj" />
     </ItemGroup>
 </Project>

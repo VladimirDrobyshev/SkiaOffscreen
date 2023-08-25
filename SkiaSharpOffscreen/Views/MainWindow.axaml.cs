@@ -21,7 +21,6 @@ public partial class MainWindow : Window
             var toplevel = (TopLevel)this.GetVisualRoot();
             var platformImpl = (WindowImpl)toplevel.PlatformImpl;
             viewModel.HWnd = platformImpl.Handle.Handle;
-            viewModel.HInstance = Kernel32.CurrentModuleHandle;
         }
         base.OnDataContextChanged(e);
     }

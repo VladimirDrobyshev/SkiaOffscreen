@@ -1,19 +1,19 @@
 using System;
-using OffscreenVulkan;
+using OffscreenOpenGl;
 using SkiaSharp;
 
 namespace SkiaSharpOffscreen.Models;
 
-public class SkiaVulkanModel : SkiaModelBase
+public class SkiaOpenGlModel : SkiaModelBase
 {
     readonly IntPtr _hWnd;
-    OffscreenVkContext? _vkContext;
+    OffscreenGlContext? _glContext;
     GRContext? _grContext;
     SKSurface? _surface;
+    
+    protected override string RendererName => "OpenGl";
 
-    protected override string RendererName => "Vulkan";
-
-    public SkiaVulkanModel(IntPtr hWnd)
+    public SkiaOpenGlModel(IntPtr hWnd)
     {
         _hWnd = hWnd;
     }
@@ -21,8 +21,8 @@ public class SkiaVulkanModel : SkiaModelBase
     {
         if (_surface == null)
         {
-            _vkContext = new OffscreenVkContext(_hWnd);
-            _grContext = GRContext.CreateVulkan(_vkContext.BackendContext);
+            _glContext = new OffscreenGlContext(_hWnd);
+            _grContext = GRContext.CreateGl();
             _surface = SKSurface.Create(_grContext, true, new SKImageInfo(Width, Height));
         }
         return _surface;
@@ -34,10 +34,10 @@ public class SkiaVulkanModel : SkiaModelBase
             _surface.Dispose();
             _surface = null;
         }
-        if (_vkContext != null)
+        if (_glContext != null)
         {
-            _vkContext.Dispose();
-            _vkContext = null;
+            _glContext.Dispose();
+            _glContext = null;
         }
     }
 }

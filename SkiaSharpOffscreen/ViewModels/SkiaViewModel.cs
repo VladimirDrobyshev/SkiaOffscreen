@@ -48,6 +48,6 @@ public class SkiaViewModel : ViewModelBase
     }
 
     void RenderSkia() => Render(new SkiaNativeModel());
-    void RenderVulkan() => Render(new SkiaVulkanModel(HWnd));
+    void RenderVulkan() => Render(new SkiaVulkanModel());
     void RenderOpenGl() => Render(new SkiaOpenGlModel(HWnd));
 }

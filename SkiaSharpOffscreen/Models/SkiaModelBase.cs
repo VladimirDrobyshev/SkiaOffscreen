@@ -10,7 +10,7 @@ namespace SkiaSharpOffscreen.Models;
 
 public abstract class SkiaModelBase : IDisposable
 {
-    const int PrimitivesCount = 1000000;
+    const int PrimitivesCount = 100000;
     protected const int Width = 800;
     protected const int Height = 600;
     

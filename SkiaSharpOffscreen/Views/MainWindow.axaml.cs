@@ -2,7 +2,6 @@ using System;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
 using Avalonia.Win32;
-using OffscreenVulkan.Platform.Windows;
 using SkiaSharpOffscreen.ViewModels;
 
 namespace SkiaSharpOffscreen.Views;

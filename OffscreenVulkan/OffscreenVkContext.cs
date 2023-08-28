@@ -1,6 +1,4 @@
-﻿using OffscreenVulkan.Platform.Windows;
-using SharpVk;
-using SharpVk.Khronos;
+﻿using SharpVk;
 using SkiaSharp;
 
 namespace OffscreenVulkan;
@@ -8,43 +6,40 @@ namespace OffscreenVulkan;
 public class OffscreenVkContext : IDisposable
 {
     Instance? _instance;
-    Surface? _surface;
+    Device? _device;
     GRVkBackendContext? _backendContext;
 
     public GRVkBackendContext BackendContext => _backendContext!;
 
-    public OffscreenVkContext(IntPtr hWnd)
+    public OffscreenVkContext()
     {
-        _instance = Instance.Create(null, new[] { "VK_KHR_surface", "VK_KHR_win32_surface" }); //TODO VD: non windows
+        _instance = Instance.Create(null, null);
         var physicalDevice = _instance.EnumeratePhysicalDevices().First();
 
-        _surface = _instance.CreateWin32Surface(Kernel32.CurrentModuleHandle, hWnd);
-        
-        var families = FindQueueFamilies(physicalDevice, _surface);
+        var graphicsQueueIndex = FindQueueFamilies(physicalDevice);
 
         var queueInfos = new[]
         {
-            new DeviceQueueCreateInfo { QueueFamilyIndex = families.GraphicsFamily, QueuePriorities = new[] { 1f } },
-            new DeviceQueueCreateInfo { QueueFamilyIndex = families.PresentFamily, QueuePriorities = new[] { 1f } },
+            new DeviceQueueCreateInfo { QueueFamilyIndex = graphicsQueueIndex, QueuePriorities = new[] { 1f } }
         };
-        var device = physicalDevice.CreateDevice(queueInfos, null, null);
-        var graphicsQueue = device.GetQueue(families.GraphicsFamily, 0);
+        _device = physicalDevice.CreateDevice(queueInfos, null, null);
+        var graphicsQueue = _device.GetQueue(graphicsQueueIndex, 0);
         _backendContext = new GRVkBackendContext
         {
             VkInstance = (IntPtr)_instance.RawHandle.ToUInt64(),
             VkPhysicalDevice = (IntPtr)physicalDevice.RawHandle.ToUInt64(),
-            VkDevice = (IntPtr)device.RawHandle.ToUInt64(),
+            VkDevice = (IntPtr)_device.RawHandle.ToUInt64(),
             VkQueue = (IntPtr)graphicsQueue.RawHandle.ToUInt64(),
-            GraphicsQueueIndex = families.GraphicsFamily,
+            GraphicsQueueIndex = graphicsQueueIndex,
             GetProcedureAddress = (name, _, deviceHandle) =>
             {
                 if (deviceHandle != IntPtr.Zero)
-                    return device.GetProcedureAddress(name);
+                    return _device.GetProcedureAddress(name);
                 return _instance.GetProcedureAddress(name);
             }
         };
     }
-    static (uint GraphicsFamily, uint PresentFamily) FindQueueFamilies(PhysicalDevice physicalDevice, Surface surface)
+    static uint FindQueueFamilies(PhysicalDevice physicalDevice)
     {
         var queueFamilyProperties = physicalDevice.GetQueueFamilyProperties();
 
@@ -56,18 +51,7 @@ public class OffscreenVkContext : IDisposable
         if (graphicsFamily == null)
             throw new Exception("Unable to find graphics queue");
 
-        uint? presentFamily = default;
-        
-        for (uint i = 0; i < queueFamilyProperties.Length; ++i)
-        {
-            if (physicalDevice.GetSurfaceSupport(i, surface))
-                presentFamily = i;
-        }
-
-        if (!presentFamily.HasValue)
-            throw new Exception("Unable to find present queue");
-
-        return ((uint)graphicsFamily.index, presentFamily.Value);
+        return (uint)graphicsFamily.index;
     }
     public void Dispose()
     {
@@ -75,6 +59,18 @@ public class OffscreenVkContext : IDisposable
         {
             _backendContext.Dispose();
             _backendContext = null;
+        }
+        
+        if (_device != null)
+        {
+            _device.Dispose();
+            _device = null;
+        }
+
+        if (_instance != null)
+        {
+            _instance.Dispose();
+            _instance = null;
         }
     }
 }

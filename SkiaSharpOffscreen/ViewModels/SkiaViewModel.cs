@@ -22,16 +22,15 @@ public class SkiaViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _image, value);
     }
     
-    public IntPtr HWnd { get; set; }
     public ReactiveCommand<Unit, Unit> RenderSkiaCommand { get; }
     public ReactiveCommand<Unit, Unit> RenderVulkanCommand { get; }
-    public ReactiveCommand<Unit, Unit> RenderOpenglCommand { get; }
+    public ReactiveCommand<Unit, Unit> RenderOpenGlCommand { get; }
 
     public SkiaViewModel()
     {
-        RenderSkiaCommand = ReactiveCommand.Create(RenderSkia);
-        RenderVulkanCommand = ReactiveCommand.Create(RenderVulkan);
-        RenderOpenglCommand = ReactiveCommand.Create(RenderOpenGl);
+        RenderSkiaCommand = ReactiveCommand.Create(() => Render(new SkiaNativeModel()));
+        RenderVulkanCommand = ReactiveCommand.Create(() => Render(new SkiaVulkanModel()));
+        RenderOpenGlCommand = ReactiveCommand.Create(() => Render(new SkiaOpenGlModel()));
     }
     void Render(SkiaModelBase model)
     {
@@ -46,8 +45,4 @@ public class SkiaViewModel : ViewModelBase
             model.Dispose();
         }
     }
-
-    void RenderSkia() => Render(new SkiaNativeModel());
-    void RenderVulkan() => Render(new SkiaVulkanModel());
-    void RenderOpenGl() => Render(new SkiaOpenGlModel(HWnd));
 }

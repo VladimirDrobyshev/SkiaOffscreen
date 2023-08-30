@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using SkiaSharp;
-using Bitmap = Avalonia.Media.Imaging.Bitmap;
 
 namespace SkiaSharpOffscreen.Models;
 
@@ -58,7 +58,7 @@ public abstract class SkiaModelBase : IDisposable
         stopwatchRender.Stop();
 
         using var image = surface.Snapshot();
-        using var imageData = image.Encode();
+        using var imageData = image.Encode(); //TODO VD: here crashes
         using var stream = new MemoryStream();
         imageData.SaveTo(stream);
         stream.Seek(0, SeekOrigin.Begin);

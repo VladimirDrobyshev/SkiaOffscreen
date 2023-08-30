@@ -6,7 +6,7 @@ public class OffscreenGlContext : IDisposable
 {
     WglContext? _wglContext;
     
-    public OffscreenGlContext(IntPtr hWnd)
+    public OffscreenGlContext()
     {
         //_wglContext = new WglContext(hWnd);
         _wglContext = new WglContext();

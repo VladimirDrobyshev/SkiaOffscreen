@@ -1,4 +1,4 @@
-﻿using SharpVk;
+using SharpVk;
 using SkiaSharp;
 
 namespace OffscreenVulkan;
@@ -16,7 +16,7 @@ public class OffscreenVkContext : IDisposable
         _instance = Instance.Create(null, null);
         var physicalDevice = _instance.EnumeratePhysicalDevices().First();
 
-        var graphicsQueueIndex = FindQueueFamilies(physicalDevice);
+        uint graphicsQueueIndex = FindQueueFamilies(physicalDevice);
 
         var queueInfos = new[]
         {
@@ -33,25 +33,34 @@ public class OffscreenVkContext : IDisposable
             GraphicsQueueIndex = graphicsQueueIndex,
             GetProcedureAddress = (name, _, deviceHandle) =>
             {
+                var result = IntPtr.Zero;
                 if (deviceHandle != IntPtr.Zero)
-                    return _device.GetProcedureAddress(name);
-                return _instance.GetProcedureAddress(name);
-            }
+                    result = _device.GetProcedureAddress(name);
+                if (result == IntPtr.Zero)
+                    result = _instance.GetProcedureAddress(name);
+#if DEBUG
+                Console.WriteLine($"{result} - {name}");
+#endif
+                return result;
+            },
+            Extensions = null,
+            ProtectedContext = false,
+            VkPhysicalDeviceFeatures = IntPtr.Zero,
+            VkPhysicalDeviceFeatures2 = IntPtr.Zero,
+            MaxAPIVersion = 0
         };
     }
     static uint FindQueueFamilies(PhysicalDevice physicalDevice)
     {
         var queueFamilyProperties = physicalDevice.GetQueueFamilyProperties();
 
-        var graphicsFamily = queueFamilyProperties
-            .Select((properties, index) => new { properties, index })
-            .SkipWhile(pair => !pair.properties.QueueFlags.HasFlag(QueueFlags.Graphics))
-            .FirstOrDefault();
+        for (uint i = 0; i < queueFamilyProperties.Length; i++)
+        {
+            if (queueFamilyProperties[i].QueueFlags.HasFlag(QueueFlags.Graphics))
+                return i;
+        }
 
-        if (graphicsFamily == null)
-            throw new Exception("Unable to find graphics queue");
-
-        return (uint)graphicsFamily.index;
+        throw new Exception("Unable to find graphics queue");
     }
     public void Dispose()
     {

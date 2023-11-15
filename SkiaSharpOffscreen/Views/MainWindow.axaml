@@ -1,32 +1,64 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:SkiaSharpOffscreen.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
         Width="1200" Height="800"
         x:Class="SkiaSharpOffscreen.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="SkiaSharpOffscreen">
+        Title="SkiaSharpOffscreen"
+        x:DataType="vm:SkiaViewModel"
+        x:CompileBindings="True">
 
     <Design.DataContext>
-        <vm:SkiaViewModel/>
+        <vm:SkiaViewModel />
     </Design.DataContext>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <Border Margin="10,10,0,10" BorderThickness="1" BorderBrush="Black" >
-            <Image Source="{Binding Image}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-        </Border>
-        <StackPanel Orientation="Vertical" Grid.Column="1">
-            <Button Command="{Binding RenderSkiaCommand}" Margin="10,10,10,0" HorizontalAlignment="Stretch">Native Skia</Button>
-            <Button Command="{Binding RenderOpenGlCommand}" Margin="10,10,10,0" HorizontalAlignment="Stretch">OpenGl</Button>
-            <Button Command="{Binding RenderVulkanCommand}" Margin="10,10,10,0" HorizontalAlignment="Stretch">Vulkan</Button>
-            <TextBlock Text="{Binding Description}" Margin="10" Width="250" />
+    <Grid ColumnDefinitions="* Auto">
+        <Image Margin="10, 10, 0, 10"
+               Grid.Column="0"
+               Source="{Binding Image}"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"/>
+
+        <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10" MinWidth="200">
+            <RadioButton Command="{Binding SetNativeCommand}" IsChecked="True">Native Skia</RadioButton>
+            <RadioButton Command="{Binding SetOpenGlCommand}">OpenGL</RadioButton>
+            <RadioButton Command="{Binding SetVulkanCommand}">Vulkan</RadioButton>
+
+            <StackPanel Orientation="Horizontal" Margin="0, 10, 0, 0">
+                <Label>Width: </Label>
+                <Label Content="{Binding Width}" />
+            </StackPanel>
+            <Slider Minimum="400" Maximum="3000" Value="{Binding Width, Mode=TwoWay}" />
+
+            <StackPanel Orientation="Horizontal" Margin="0, 10, 0, 0">
+                <Label>Height: </Label>
+                <Label Content="{Binding Height}" />
+            </StackPanel>
+            <Slider Minimum="400" Maximum="3000" Value="{Binding Height, Mode=TwoWay}" />
+
+            <StackPanel Orientation="Horizontal" Margin="0, 10, 0, 0">
+                <Label>Primitive Count: </Label>
+                <Label Content="{Binding PrimitiveCount}" />
+            </StackPanel>
+            <Slider Minimum="100" Maximum="1000000" Value="{Binding PrimitiveCount, Mode=TwoWay}" />
+
+            <StackPanel Orientation="Horizontal" Margin="0, 10, 0, 0">
+                <Label>Primitive Size: </Label>
+                <Label Content="{Binding PrimitiveSize}" />
+            </StackPanel>
+            <Slider Minimum="1" Maximum="1000" Value="{Binding PrimitiveSize, Mode=TwoWay}" />
+
+            <StackPanel Orientation="Horizontal" Margin="0, 10, 0, 0">
+                <Label>Init Time (ms): </Label>
+                <Label Content="{Binding InitTime}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0, 10, 0, 0">
+                <Label>Render Time (ms): </Label>
+                <Label Content="{Binding RenderTime}" />
+            </StackPanel>
+
+            <Button Command="{Binding RenderCommand}" Margin="0, 10, 0, 0" HorizontalAlignment="Stretch">Render</Button>
         </StackPanel>
     </Grid>
-
 </Window>

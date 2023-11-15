@@ -1,4 +1,3 @@
-using System;
 using OffscreenOpenGl;
 using SkiaSharp;
 
@@ -10,15 +9,13 @@ public class SkiaOpenGlModel : SkiaModelBase
     GRContext? _grContext;
     SKSurface? _surface;
     
-    protected override string RendererName => "OpenGl";
-
-    protected override SKSurface GetSurface()
+    protected override SKSurface GetSurface(int width, int height)
     {
         if (_surface == null)
         {
             _glContext = new OffscreenGlContext();
             _grContext = GRContext.CreateGl();
-            _surface = SKSurface.Create(_grContext, true, new SKImageInfo(Width, Height));
+            _surface = SKSurface.Create(_grContext, true, new SKImageInfo(width, height));
         }
         return _surface;
     }

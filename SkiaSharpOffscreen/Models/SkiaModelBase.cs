@@ -10,66 +10,66 @@ namespace SkiaSharpOffscreen.Models;
 
 public abstract class SkiaModelBase : IDisposable
 {
-    const int PrimitivesCount = 100000;
-    protected const int Width = 800;
-    protected const int Height = 600;
-    
-    protected abstract string RendererName { get; }
-
-    public string Description { get; private set; }
+    public double InitTime { get; private set; }
+    public double RenderTime { get; private set; }
     public IImage Image { get; private set; }
 
-    void RenderPrimitives(SKCanvas canvas)
+    void RenderPrimitives(SKCanvas canvas, RenderParams @params)
     {
-        const int maxWidth = Width / 4;
-        const int maxHeight = Height / 4;
         var rnd = new Random(0);
 
-        canvas.Clear(SKColors.SkyBlue);
-        for (int i = 0; i < PrimitivesCount; i++)
+        for (int i = 0; i < @params.PrimitiveCount; i++)
         {
             using var paint = new SKPaint();
             paint.Style = SKPaintStyle.Stroke;
             paint.StrokeWidth = 1;
-            paint.Color = new SKColor((byte) rnd.Next(byte.MaxValue), (byte) rnd.Next(byte.MaxValue),
-                (byte) rnd.Next(byte.MaxValue), (byte) rnd.Next(byte.MaxValue));
+            paint.Style = @params.GetPaintStyle();
+            paint.Color = RandomColor();
 
-            if (i % 3 == 0)
-                canvas.DrawLine(RandomPoint(), RandomPoint(), paint);
-            else if (i % 3 == 1)
-                canvas.DrawCircle(RandomPoint(), rnd.Next(maxWidth), paint);
-            else
-                canvas.DrawRect(rnd.Next(maxWidth), rnd.Next(maxHeight), rnd.Next(maxWidth), rnd.Next(maxHeight), paint);
+            switch (@params.PrimitiveType)
+            {
+                case PrimitiveType.Rectangle:
+                    var location = RandomPoint();
+                    canvas.DrawRect(location.X, location.Y, @params.PrimitiveSize, @params.PrimitiveSize, paint);
+                    break;
+                case PrimitiveType.Circle:
+                    canvas.DrawCircle(RandomPoint(), @params.PrimitiveSize, paint);
+                    break;
+                case PrimitiveType.Line:
+                    canvas.DrawLine(RandomPoint(), RandomPoint(), paint);
+                    break;
+            }
         }
 
         return;
 
-        SKPoint RandomPoint() => new (rnd.Next(Width), rnd.Next(Height));
+        SKPoint RandomPoint() => new(rnd.Next(@params.Width - @params.PrimitiveSize),
+            rnd.Next(@params.Height - @params.PrimitiveSize));
+
+        SKColor RandomColor() => new((byte) rnd.Next(byte.MaxValue), (byte) rnd.Next(byte.MaxValue),
+            (byte) rnd.Next(byte.MaxValue), (byte) rnd.Next(byte.MaxValue));
     }
-    protected abstract SKSurface GetSurface();
-    public void Render()
+    protected abstract SKSurface GetSurface(int width, int height);
+    public void Render(RenderParams @params)
     {
         var stopwatchCanvas = Stopwatch.StartNew();
-        var surface = GetSurface();
+        var surface = GetSurface(@params.Width, @params.Height);
+        surface.Canvas.Clear();
         stopwatchCanvas.Stop();
         
         var stopwatchRender = Stopwatch.StartNew();
-        RenderPrimitives(surface.Canvas);
+        RenderPrimitives(surface.Canvas, @params);
         stopwatchRender.Stop();
 
         using var image = surface.Snapshot();
-        using var imageData = image.Encode(); //TODO VD: here crashes
+        using var imageData = image.Encode(); //TODO VD: here crashes vulkan on linux (or on any flush etc)
         using var stream = new MemoryStream();
         imageData.SaveTo(stream);
         stream.Seek(0, SeekOrigin.Begin);
         Image = new Bitmap(stream);
         
-        var output = new StringBuilder();
-        output.AppendLine($"Backend: {RendererName}");
-        output.AppendLine($"Primitives count: {PrimitivesCount}");
-        output.AppendLine($"Render time: {Math.Ceiling(stopwatchRender.Elapsed.TotalMilliseconds)}ms");
-        output.AppendLine($"Surface creation time: {stopwatchCanvas.Elapsed.TotalMilliseconds}ms");
-        Description = output.ToString();
+        InitTime = Math.Round(stopwatchCanvas.Elapsed.TotalMilliseconds, 2, MidpointRounding.AwayFromZero);
+        RenderTime = Math.Round(stopwatchRender.Elapsed.TotalMilliseconds, 2, MidpointRounding.AwayFromZero);
     }
     public abstract void Dispose();
 }

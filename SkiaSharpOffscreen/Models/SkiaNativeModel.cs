@@ -6,11 +6,9 @@ public class SkiaNativeModel : SkiaModelBase
 {
     SKSurface? _surface;
 
-    protected override string RendererName => "Native Skia";
-
-    protected override SKSurface GetSurface()
+    protected override SKSurface GetSurface(int width, int height)
     {
-        _surface ??= SKSurface.Create(new SKImageInfo(Width, Height));
+        _surface ??= SKSurface.Create(new SKImageInfo(width, height));
         return _surface;
     }
     public override void Dispose()

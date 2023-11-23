@@ -13,21 +13,26 @@ public class SkiaOpenGlModel : SkiaModelBase
     {
         if (_surface == null)
         {
-            _glContext = new OffscreenGlContext();
-            _grContext = GRContext.CreateGl();
+            _glContext ??= new OffscreenGlContext();
+            _grContext ??= GRContext.CreateGl();
             _surface = SKSurface.Create(_grContext, true, new SKImageInfo(width, height));
         }
 
         return _surface;
     }
 
-    public override void Dispose()
+    protected override void DestroySurface()
     {
         if (_surface != null)
         {
             _surface.Dispose();
             _surface = null;
         }
+    }
+
+    public override void Dispose()
+    {
+        DestroySurface();
 
         if (_glContext != null)
         {

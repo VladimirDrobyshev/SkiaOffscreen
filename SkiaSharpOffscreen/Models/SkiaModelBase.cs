@@ -1,8 +1,8 @@
 using System;
 using System.Diagnostics;
-using System.IO;
-using Avalonia.Media;
+using Avalonia;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using SkiaSharp;
 
 namespace SkiaSharpOffscreen.Models;
@@ -11,7 +11,8 @@ public abstract class SkiaModelBase : IDisposable
 {
     public double InitTime { get; private set; }
     public double RenderTime { get; private set; }
-    public IImage Image { get; private set; }
+    public double PresentTime { get; private set; }
+    public WriteableBitmap? Image { get; private set; }
     public abstract void Dispose();
 
     private void RenderPrimitives(SKCanvas canvas, RenderParams @params)
@@ -58,6 +59,8 @@ public abstract class SkiaModelBase : IDisposable
 
     protected abstract SKSurface GetSurface(int width, int height);
 
+    protected abstract void DestroySurface();
+
     public void Render(RenderParams @params)
     {
         var stopwatchCanvas = Stopwatch.StartNew();
@@ -69,14 +72,23 @@ public abstract class SkiaModelBase : IDisposable
         RenderPrimitives(surface.Canvas, @params);
         stopwatchRender.Stop();
 
-        using var image = surface.Snapshot();
-        using var imageData = image.Encode(); //TODO VD: here crashes vulkan on linux (or on any flush etc)
-        using var stream = new MemoryStream();
-        imageData.SaveTo(stream);
-        stream.Seek(0, SeekOrigin.Begin);
-        Image = new Bitmap(stream);
+        var stopwatchPresent = Stopwatch.StartNew();
+        Image?.Dispose();
+        Image = new WriteableBitmap(new PixelSize(@params.Width, @params.Height), new Vector(96, 96), PixelFormat.Bgra8888, AlphaFormat.Premul);
+        using (var framebuffer = Image.Lock())
+        {
+            surface.ReadPixels(new SKImageInfo(@params.Width, @params.Height, SKColorType.Bgra8888, SKAlphaType.Premul), framebuffer.Address, framebuffer.RowBytes, 0, 0);
+        }
+        stopwatchPresent.Stop();
 
         InitTime = Math.Round(stopwatchCanvas.Elapsed.TotalMilliseconds, 2, MidpointRounding.AwayFromZero);
         RenderTime = Math.Round(stopwatchRender.Elapsed.TotalMilliseconds, 2, MidpointRounding.AwayFromZero);
+        PresentTime = Math.Round(stopwatchPresent.Elapsed.TotalMilliseconds, 2, MidpointRounding.AwayFromZero);
+    }
+
+    public void Clear()
+    {
+        DestroySurface();
+        Image = null;
     }
 }

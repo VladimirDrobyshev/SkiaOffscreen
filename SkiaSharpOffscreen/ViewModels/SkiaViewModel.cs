@@ -2,6 +2,7 @@
 using System.Reactive;
 using Avalonia.Media;
 using ReactiveUI;
+using SharpVk.Google;
 using SkiaSharpOffscreen.Models;
 
 namespace SkiaSharpOffscreen.ViewModels;
@@ -10,17 +11,18 @@ public class SkiaViewModel : ViewModelBase
 {
     private readonly RenderParams _params = new();
 
-    private bool _fill;
-    private int _height = 1000;
-    private IImage? _image;
-    private double _initTime;
-    private int _primitiveCount = 100000;
-    private int _primitiveSize = 20;
-    private PrimitiveType _primitiveType;
-    private SkiaModelBase _renderModel = new SkiaNativeModel();
-    private double _renderTime;
+    private bool _fill = true;
     private bool _stroke = true;
     private int _width = 2000;
+    private int _height = 1000;
+    private int _primitiveCount = 100000;
+    private int _primitiveSize = 20;
+    private double _initTime;
+    private double _renderTime;
+    private double _presentTime;
+    private IImage? _image;
+    private PrimitiveType _primitiveType;
+    private SkiaModelBase _renderModel = new SkiaNativeModel();
 
     public SkiaViewModel()
     {
@@ -79,6 +81,12 @@ public class SkiaViewModel : ViewModelBase
         get => _renderTime;
         set => this.RaiseAndSetIfChanged(ref _renderTime, value);
     }
+    
+    public double PresentTime
+    {
+        get => _presentTime;
+        set => this.RaiseAndSetIfChanged(ref _presentTime, value);
+    }
 
     public PrimitiveType PrimitiveType
     {
@@ -107,6 +115,11 @@ public class SkiaViewModel : ViewModelBase
         _params.Stroke = Stroke; //TODO VD: Add to settings
         //TODO VD: Add to settings
         //_params.PrimitiveType
+
+        if (e.PropertyName is nameof(Width) or nameof(Height))
+        {
+            _renderModel.Clear();
+        }
     }
 
     private void Render()
@@ -115,6 +128,7 @@ public class SkiaViewModel : ViewModelBase
         Image = _renderModel.Image;
         InitTime = _renderModel.InitTime;
         RenderTime = _renderModel.RenderTime;
+        PresentTime = _renderModel.PresentTime;
     }
 
     private void SetRenderer(SkiaModelBase renderer)

@@ -57,6 +57,11 @@
                 <Label>Render Time (ms): </Label>
                 <Label Content="{Binding RenderTime}" />
             </StackPanel>
+            
+            <StackPanel Orientation="Horizontal" Margin="0, 10, 0, 0">
+                <Label>Present Time (ms): </Label>
+                <Label Content="{Binding PresentTime}" />
+            </StackPanel>
 
             <Button Command="{Binding RenderCommand}" Margin="0, 10, 0, 0" HorizontalAlignment="Stretch">Render</Button>
         </StackPanel>

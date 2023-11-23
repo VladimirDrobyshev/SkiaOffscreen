@@ -12,7 +12,7 @@ public class SkiaNativeModel : SkiaModelBase
         return _surface;
     }
 
-    public override void Dispose()
+    protected override void DestroySurface()
     {
         if (_surface != null)
         {
@@ -20,4 +20,6 @@ public class SkiaNativeModel : SkiaModelBase
             _surface = null;
         }
     }
+
+    public override void Dispose() => DestroySurface();
 }

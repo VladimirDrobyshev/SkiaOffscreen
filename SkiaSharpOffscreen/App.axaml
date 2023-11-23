@@ -3,7 +3,7 @@
              xmlns:local="using:SkiaSharpOffscreen"
              x:Class="SkiaSharpOffscreen.App">
     <Application.DataTemplates>
-        <local:ViewLocator/>
+        <local:ViewLocator />
     </Application.DataTemplates>
 
     <Application.Styles>

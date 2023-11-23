@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using SkiaSharp;
@@ -13,12 +12,13 @@ public abstract class SkiaModelBase : IDisposable
     public double InitTime { get; private set; }
     public double RenderTime { get; private set; }
     public IImage Image { get; private set; }
+    public abstract void Dispose();
 
-    void RenderPrimitives(SKCanvas canvas, RenderParams @params)
+    private void RenderPrimitives(SKCanvas canvas, RenderParams @params)
     {
         var rnd = new Random(0);
 
-        for (int i = 0; i < @params.PrimitiveCount; i++)
+        for (var i = 0; i < @params.PrimitiveCount; i++)
         {
             using var paint = new SKPaint();
             paint.Style = SKPaintStyle.Stroke;
@@ -43,20 +43,28 @@ public abstract class SkiaModelBase : IDisposable
 
         return;
 
-        SKPoint RandomPoint() => new(rnd.Next(@params.Width - @params.PrimitiveSize),
-            rnd.Next(@params.Height - @params.PrimitiveSize));
+        SKPoint RandomPoint()
+        {
+            return new SKPoint(rnd.Next(@params.Width - @params.PrimitiveSize),
+                rnd.Next(@params.Height - @params.PrimitiveSize));
+        }
 
-        SKColor RandomColor() => new((byte) rnd.Next(byte.MaxValue), (byte) rnd.Next(byte.MaxValue),
-            (byte) rnd.Next(byte.MaxValue), (byte) rnd.Next(byte.MaxValue));
+        SKColor RandomColor()
+        {
+            return new SKColor((byte)rnd.Next(byte.MaxValue), (byte)rnd.Next(byte.MaxValue),
+                (byte)rnd.Next(byte.MaxValue), (byte)rnd.Next(byte.MaxValue));
+        }
     }
+
     protected abstract SKSurface GetSurface(int width, int height);
+
     public void Render(RenderParams @params)
     {
         var stopwatchCanvas = Stopwatch.StartNew();
         var surface = GetSurface(@params.Width, @params.Height);
         surface.Canvas.Clear();
         stopwatchCanvas.Stop();
-        
+
         var stopwatchRender = Stopwatch.StartNew();
         RenderPrimitives(surface.Canvas, @params);
         stopwatchRender.Stop();
@@ -67,9 +75,8 @@ public abstract class SkiaModelBase : IDisposable
         imageData.SaveTo(stream);
         stream.Seek(0, SeekOrigin.Begin);
         Image = new Bitmap(stream);
-        
+
         InitTime = Math.Round(stopwatchCanvas.Elapsed.TotalMilliseconds, 2, MidpointRounding.AwayFromZero);
         RenderTime = Math.Round(stopwatchRender.Elapsed.TotalMilliseconds, 2, MidpointRounding.AwayFromZero);
     }
-    public abstract void Dispose();
 }

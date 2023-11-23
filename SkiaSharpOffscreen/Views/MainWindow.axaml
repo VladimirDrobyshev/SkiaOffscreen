@@ -17,7 +17,7 @@
                Grid.Column="0"
                Source="{Binding Image}"
                HorizontalAlignment="Stretch"
-               VerticalAlignment="Stretch"/>
+               VerticalAlignment="Stretch" />
 
         <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10" MinWidth="200">
             <RadioButton Command="{Binding SetNativeCommand}" IsChecked="True">Native Skia</RadioButton>

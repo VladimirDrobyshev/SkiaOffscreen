@@ -5,9 +5,9 @@ namespace SkiaSharpOffscreen.Models;
 
 public class SkiaVulkanModel : SkiaModelBase
 {
-    OffscreenVkContext? _vkContext;
-    GRContext? _grContext;
-    SKSurface? _surface;
+    private GRContext? _grContext;
+    private SKSurface? _surface;
+    private OffscreenVkContext? _vkContext;
 
     protected override SKSurface GetSurface(int width, int height)
     {
@@ -17,8 +17,10 @@ public class SkiaVulkanModel : SkiaModelBase
             _grContext = GRContext.CreateVulkan(_vkContext.BackendContext);
             _surface = SKSurface.Create(_grContext, true, new SKImageInfo(width, height));
         }
+
         return _surface;
     }
+
     public override void Dispose()
     {
         if (_surface != null)
@@ -26,11 +28,13 @@ public class SkiaVulkanModel : SkiaModelBase
             _surface.Dispose();
             _surface = null;
         }
+
         if (_grContext != null)
         {
             _grContext.Dispose();
             _grContext = null;
         }
+
         if (_vkContext != null)
         {
             _vkContext.Dispose();

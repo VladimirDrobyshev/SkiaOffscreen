@@ -4,13 +4,14 @@ namespace SkiaSharpOffscreen.Models;
 
 public class SkiaNativeModel : SkiaModelBase
 {
-    SKSurface? _surface;
+    private SKSurface? _surface;
 
     protected override SKSurface GetSurface(int width, int height)
     {
         _surface ??= SKSurface.Create(new SKImageInfo(width, height));
         return _surface;
     }
+
     public override void Dispose()
     {
         if (_surface != null)

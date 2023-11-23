@@ -8,75 +8,19 @@ namespace SkiaSharpOffscreen.ViewModels;
 
 public class SkiaViewModel : ViewModelBase
 {
-    readonly RenderParams _params = new();
+    private readonly RenderParams _params = new();
 
-    bool _fill;
-    bool _stroke = true;
-    int _width = 2000;
-    int _height = 1000;
-    int _primitiveCount = 100000;
-    int _primitiveSize = 20;
-    double _initTime;
-    double _renderTime;
-    PrimitiveType _primitiveType;
-    IImage? _image;
-    SkiaModelBase _renderModel = new SkiaNativeModel();
-    
-    public bool Fill
-    {
-        get => _fill;
-        set => this.RaiseAndSetIfChanged(ref _fill, value);
-    }
-    public bool Stroke
-    {
-        get => _stroke;
-        set => this.RaiseAndSetIfChanged(ref _stroke, value);
-    }
-    public int Width
-    {
-        get => _width;
-        set => this.RaiseAndSetIfChanged(ref _width, value);
-    }
-    public int Height
-    {
-        get => _height;
-        set => this.RaiseAndSetIfChanged(ref _height, value);
-    }
-    public int PrimitiveCount
-    {
-        get => _primitiveCount;
-        set => this.RaiseAndSetIfChanged(ref _primitiveCount, value);
-    }
-    public int PrimitiveSize
-    {
-        get => _primitiveSize;
-        set => this.RaiseAndSetIfChanged(ref _primitiveSize, value);
-    }
-    public double InitTime
-    {
-        get => _initTime;
-        set => this.RaiseAndSetIfChanged(ref _initTime, value);
-    }
-    public double RenderTime
-    {
-        get => _renderTime;
-        set => this.RaiseAndSetIfChanged(ref _renderTime, value);
-    }
-    public PrimitiveType PrimitiveType
-    {
-        get => _primitiveType;
-        set => this.RaiseAndSetIfChanged(ref _primitiveType, value);
-    }
-    public IImage? Image
-    {
-        get => _image;
-        set => this.RaiseAndSetIfChanged(ref _image, value);
-    }
-    
-    public ReactiveCommand<Unit, Unit> RenderCommand { get; }
-    public ReactiveCommand<Unit, Unit> SetNativeCommand { get; }
-    public ReactiveCommand<Unit, Unit> SetOpenGlCommand { get; }
-    public ReactiveCommand<Unit, Unit> SetVulkanCommand { get; }
+    private bool _fill;
+    private int _height = 1000;
+    private IImage? _image;
+    private double _initTime;
+    private int _primitiveCount = 100000;
+    private int _primitiveSize = 20;
+    private PrimitiveType _primitiveType;
+    private SkiaModelBase _renderModel = new SkiaNativeModel();
+    private double _renderTime;
+    private bool _stroke = true;
+    private int _width = 2000;
 
     public SkiaViewModel()
     {
@@ -88,7 +32,72 @@ public class SkiaViewModel : ViewModelBase
         UpdateParams(null, new PropertyChangedEventArgs(null));
     }
 
-    void UpdateParams(object? sender, PropertyChangedEventArgs e)
+    public bool Fill
+    {
+        get => _fill;
+        set => this.RaiseAndSetIfChanged(ref _fill, value);
+    }
+
+    public bool Stroke
+    {
+        get => _stroke;
+        set => this.RaiseAndSetIfChanged(ref _stroke, value);
+    }
+
+    public int Width
+    {
+        get => _width;
+        set => this.RaiseAndSetIfChanged(ref _width, value);
+    }
+
+    public int Height
+    {
+        get => _height;
+        set => this.RaiseAndSetIfChanged(ref _height, value);
+    }
+
+    public int PrimitiveCount
+    {
+        get => _primitiveCount;
+        set => this.RaiseAndSetIfChanged(ref _primitiveCount, value);
+    }
+
+    public int PrimitiveSize
+    {
+        get => _primitiveSize;
+        set => this.RaiseAndSetIfChanged(ref _primitiveSize, value);
+    }
+
+    public double InitTime
+    {
+        get => _initTime;
+        set => this.RaiseAndSetIfChanged(ref _initTime, value);
+    }
+
+    public double RenderTime
+    {
+        get => _renderTime;
+        set => this.RaiseAndSetIfChanged(ref _renderTime, value);
+    }
+
+    public PrimitiveType PrimitiveType
+    {
+        get => _primitiveType;
+        set => this.RaiseAndSetIfChanged(ref _primitiveType, value);
+    }
+
+    public IImage? Image
+    {
+        get => _image;
+        set => this.RaiseAndSetIfChanged(ref _image, value);
+    }
+
+    public ReactiveCommand<Unit, Unit> RenderCommand { get; }
+    public ReactiveCommand<Unit, Unit> SetNativeCommand { get; }
+    public ReactiveCommand<Unit, Unit> SetOpenGlCommand { get; }
+    public ReactiveCommand<Unit, Unit> SetVulkanCommand { get; }
+
+    private void UpdateParams(object? sender, PropertyChangedEventArgs e)
     {
         _params.Width = Width;
         _params.Height = Height;
@@ -100,14 +109,15 @@ public class SkiaViewModel : ViewModelBase
         //_params.PrimitiveType
     }
 
-    void Render()
+    private void Render()
     {
         _renderModel.Render(_params);
         Image = _renderModel.Image;
         InitTime = _renderModel.InitTime;
         RenderTime = _renderModel.RenderTime;
     }
-    void SetRenderer(SkiaModelBase renderer)
+
+    private void SetRenderer(SkiaModelBase renderer)
     {
         _renderModel.Dispose();
         _renderModel = renderer;

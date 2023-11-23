@@ -4,26 +4,23 @@ using Avalonia.Markup.Xaml;
 using SkiaSharpOffscreen.ViewModels;
 using SkiaSharpOffscreen.Views;
 
-namespace SkiaSharpOffscreen
+namespace SkiaSharpOffscreen;
+
+public class App : Application
 {
-    public partial class App : Application
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        AvaloniaXamlLoader.Load(this);
+    }
 
-        public override void OnFrameworkInitializationCompleted()
-        {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+    public override void OnFrameworkInitializationCompleted()
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            desktop.MainWindow = new MainWindow
             {
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = new SkiaViewModel(),
-                };
-            }
+                DataContext = new SkiaViewModel()
+            };
 
-            base.OnFrameworkInitializationCompleted();
-        }
+        base.OnFrameworkInitializationCompleted();
     }
 }

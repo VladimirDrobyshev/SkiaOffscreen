@@ -5,10 +5,10 @@ namespace SkiaSharpOffscreen.Models;
 
 public class SkiaOpenGlModel : SkiaModelBase
 {
-    OffscreenGlContext? _glContext;
-    GRContext? _grContext;
-    SKSurface? _surface;
-    
+    private OffscreenGlContext? _glContext;
+    private GRContext? _grContext;
+    private SKSurface? _surface;
+
     protected override SKSurface GetSurface(int width, int height)
     {
         if (_surface == null)
@@ -17,8 +17,10 @@ public class SkiaOpenGlModel : SkiaModelBase
             _grContext = GRContext.CreateGl();
             _surface = SKSurface.Create(_grContext, true, new SKImageInfo(width, height));
         }
+
         return _surface;
     }
+
     public override void Dispose()
     {
         if (_surface != null)
@@ -26,6 +28,7 @@ public class SkiaOpenGlModel : SkiaModelBase
             _surface.Dispose();
             _surface = null;
         }
+
         if (_glContext != null)
         {
             _glContext.Dispose();

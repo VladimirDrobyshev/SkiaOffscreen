@@ -1,3 +1,4 @@
+using System;
 using SkiaSharp;
 
 namespace SkiaSharpOffscreen.Models;
@@ -10,6 +11,7 @@ public class RenderParams
     public int Height { get; set; }
     public int PrimitiveCount { get; set; }
     public int PrimitiveSize { get; set; }
+    public int Seed => new Random().Next();
     public PrimitiveType PrimitiveType { get; set; }
 
     public SKPaintStyle GetPaintStyle()

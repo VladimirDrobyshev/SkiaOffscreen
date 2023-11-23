@@ -17,7 +17,7 @@ public abstract class SkiaModelBase : IDisposable
 
     private void RenderPrimitives(SKCanvas canvas, RenderParams @params)
     {
-        var rnd = new Random(0);
+        var rnd = new Random(@params.Seed);
 
         for (var i = 0; i < @params.PrimitiveCount; i++)
         {
@@ -73,8 +73,7 @@ public abstract class SkiaModelBase : IDisposable
         stopwatchRender.Stop();
 
         var stopwatchPresent = Stopwatch.StartNew();
-        Image?.Dispose();
-        Image = new WriteableBitmap(new PixelSize(@params.Width, @params.Height), new Vector(96, 96), PixelFormat.Bgra8888, AlphaFormat.Premul);
+        Image ??= new WriteableBitmap(new PixelSize(@params.Width, @params.Height), new Vector(96, 96), PixelFormat.Bgra8888, AlphaFormat.Premul);
         using (var framebuffer = Image.Lock())
         {
             surface.ReadPixels(new SKImageInfo(@params.Width, @params.Height, SKColorType.Bgra8888, SKAlphaType.Premul), framebuffer.Address, framebuffer.RowBytes, 0, 0);
@@ -89,6 +88,7 @@ public abstract class SkiaModelBase : IDisposable
     public void Clear()
     {
         DestroySurface();
+        Image?.Dispose();
         Image = null;
     }
 }

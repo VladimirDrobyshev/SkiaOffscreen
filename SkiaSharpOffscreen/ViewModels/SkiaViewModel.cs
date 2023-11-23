@@ -125,6 +125,7 @@ public class SkiaViewModel : ViewModelBase
     private void Render()
     {
         _renderModel.Render(_params);
+        Image = null;
         Image = _renderModel.Image;
         InitTime = _renderModel.InitTime;
         RenderTime = _renderModel.RenderTime;

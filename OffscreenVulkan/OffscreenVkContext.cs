@@ -38,9 +38,6 @@ public class OffscreenVkContext : IDisposable
                     result = _device.GetProcedureAddress(name);
                 if (result == IntPtr.Zero)
                     result = _instance.GetProcedureAddress(name);
-#if DEBUG
-                Console.WriteLine($"{result} - {name}");
-#endif
                 return result;
             },
             Extensions = null,

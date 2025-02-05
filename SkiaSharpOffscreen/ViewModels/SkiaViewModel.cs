@@ -2,7 +2,6 @@
 using System.Reactive;
 using Avalonia.Media;
 using ReactiveUI;
-using SharpVk.Google;
 using SkiaSharpOffscreen.Models;
 
 namespace SkiaSharpOffscreen.ViewModels;
@@ -113,8 +112,7 @@ public class SkiaViewModel : ViewModelBase
         _params.PrimitiveCount = PrimitiveCount;
         _params.Fill = Fill; //TODO VD: Add to settings
         _params.Stroke = Stroke; //TODO VD: Add to settings
-        //TODO VD: Add to settings
-        //_params.PrimitiveType
+        _params.PrimitiveType = PrimitiveType;
 
         if (e.PropertyName is nameof(Width) or nameof(Height))
         {
